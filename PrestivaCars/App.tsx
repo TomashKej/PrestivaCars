@@ -1,38 +1,19 @@
-import { NewAppScreen } from '@react-native/new-app-screen';
-import { StatusBar, StyleSheet, useColorScheme, View } from 'react-native';
-import {
-  SafeAreaProvider,
-  useSafeAreaInsets,
-} from 'react-native-safe-area-context';
+import React from 'react';
+import { enableScreens } from 'react-native-screens';
+import {SafeAreaProvider} from 'react-native-safe-area-context';
+import {StatusBar, useColorScheme} from 'react-native';
+import LandingScreen from './src/screens/LandingScreen';
+import RootNavigator from './src/navigation/RootNavigator';
 
 function App() {
+  enableScreens(); // rejestruje natywne ekrany dla lepszej wydajności na Androidzie i iOS
   const isDarkMode = useColorScheme() === 'dark';
 
   return (
     <SafeAreaProvider>
       <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      <AppContent />
+      <RootNavigator />
     </SafeAreaProvider>
   );
 }
-
-function AppContent() {
-  const safeAreaInsets = useSafeAreaInsets();
-
-  return (
-    <View style={styles.container}>
-      <NewAppScreen
-        templateFileName="App.tsx"
-        safeAreaInsets={safeAreaInsets}
-      />
-    </View>
-  );
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-});
-
 export default App;
