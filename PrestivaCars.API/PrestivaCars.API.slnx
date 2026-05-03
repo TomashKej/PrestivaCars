@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="../PrestivaCars.Application/PrestivaCars.Application.csproj" Id="e96408e1-05f5-450a-8385-36e2aade0207" />
+  <Project Path="../PrestivaCars.Domain/PrestivaCars.Domain.csproj" Id="4d176a65-9655-4ff6-b7b8-874941e0e2c0" />
+  <Project Path="../PrestivaCars.Infrastructure/PrestivaCars.Infrastructure.csproj" Id="949557ab-ac27-4942-91f4-c51ca7ab53be" />
+  <Project Path="PrestivaCars.API.csproj" />
+</Solution>
