@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Features\VehiclesCategories\Comands\" />
+    <Folder Include="Features\VehiclesCategories\Mappings\" />
   </ItemGroup>
 
 </Project>

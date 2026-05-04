@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace PrestivaCars.Application.Features.VehiclesCategories.DTOs
+namespace PrestivaCars.Application.Features.VehiclesCategories.Messages.DTOs
 {
     /// <summary>
     /// Represents a Data Transfer Object (DTO) for vehicle categories in the Prestiva Cars application. 
