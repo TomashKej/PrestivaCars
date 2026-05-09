@@ -6,4 +6,10 @@
 export type RootStackParamList = {
     Landing: undefined;
     Home: undefined;
+    Vehicles: undefined;
+    VehicleDetails: { vehicleId: number }; // VehicleDetails screen expects a vehicleId parameter of type number
+    SellVehicle: undefined;
+    Account: undefined;
+    MyVehicleListings: undefined;
+    EditVehicle: { vehicleId: number }; // EditVehicle screen expects a vehicleId parameter of type number
 }

@@ -45,7 +45,7 @@ const PrimaryButton = ({
             <Text
                 style={[
                     styles.text,
-                    isPrimary ? styles.primaryButton : styles.secondaryButton,
+                    isPrimary ? styles.primaryText : styles.secondaryText,
                     textStyle,
                 ]}>
                 {title}

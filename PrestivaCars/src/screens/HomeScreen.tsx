@@ -13,8 +13,12 @@ import typography from "../theme/typography";
 import PrimaryButton from "../components/common/PrimaryButton";
 import BottomTabBar from "../components/common/BottomTabBar";
 import CategoryCard from "../components/home/CategoryCard";
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {RootStackParamList} from "../navigation/types";
 
-const HomeScreen = () => {
+type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
+
+const HomeScreen = ({navigation}: Props) => {
     return (
         <View style={styles.screen}>
             <ScrollView
@@ -28,8 +32,16 @@ const HomeScreen = () => {
                 </View>
 
                 <View style={styles.buttonRow}>
-                    <PrimaryButton title="Browse All ->" style={styles.actionButton} />
-                    <PrimaryButton title="Sell Vehicle" variant="secondary" style={styles.actionButton} />
+                    <PrimaryButton 
+                        title="Browse All ->" 
+                        onPress={() => navigation.navigate('Vehicles')} 
+                        style={styles.actionButton} 
+                    />
+                    <PrimaryButton 
+                        title="Sell Vehicle" 
+                        onPress={() => navigation.navigate('SellVehicle')}
+                        variant="secondary" 
+                        style={styles.actionButton} />
                 </View>
 
                 <Text style={styles.sectionTitle}>Browse By Category</Text>
