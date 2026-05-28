@@ -1,27 +1,7 @@
 {
   "Version": 1,
   "WorkspaceRootPath": "C:\\git\\MobileAppProject\\PrestivaCars.API\\",
-  "Documents": [
-    {
-      "AbsoluteMoniker": "D:0:0:{4F457370-91FF-2826-BC86-8C041CFA3169}|PrestivaCars.API.csproj|c:\\git\\mobileappproject\\prestivacars.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{4F457370-91FF-2826-BC86-8C041CFA3169}|PrestivaCars.API.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{4F457370-91FF-2826-BC86-8C041CFA3169}|PrestivaCars.API.csproj|c:\\git\\mobileappproject\\prestivacars.api\\properties\\launchsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
-      "RelativeMoniker": "D:0:0:{4F457370-91FF-2826-BC86-8C041CFA3169}|PrestivaCars.API.csproj|solutionrelative:properties\\launchsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{4F457370-91FF-2826-BC86-8C041CFA3169}|PrestivaCars.API.csproj|c:\\git\\mobileappproject\\prestivacars.api\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
-      "RelativeMoniker": "D:0:0:{4F457370-91FF-2826-BC86-8C041CFA3169}|PrestivaCars.API.csproj|solutionrelative:appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{E96408E1-05F5-450A-8385-36E2AADE0207}|..\\PrestivaCars.Application\\PrestivaCars.Application.csproj|c:\\git\\mobileappproject\\prestivacars.application\\features\\vehicles\\messages\\dtos\\vehicledto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{4F457370-91FF-2826-BC86-8C041CFA3169}|PrestivaCars.API.csproj|c:\\git\\mobileappproject\\prestivacars.api\\controllers\\vehiclecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{4F457370-91FF-2826-BC86-8C041CFA3169}|PrestivaCars.API.csproj|solutionrelative:controllers\\vehiclecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    }
-  ],
+  "Documents": [],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
@@ -29,73 +9,11 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 2,
+          "SelectedChildIndex": -1,
           "Children": [
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "VehicleController.cs",
-              "DocumentMoniker": "C:\\git\\MobileAppProject\\PrestivaCars.API\\Controllers\\VehicleController.cs",
-              "RelativeDocumentMoniker": "Controllers\\VehicleController.cs",
-              "ToolTip": "C:\\git\\MobileAppProject\\PrestivaCars.API\\Controllers\\VehicleController.cs",
-              "RelativeToolTip": "Controllers\\VehicleController.cs",
-              "ViewState": "AgIAABYAAAAAAAAAAAAgwCQAAAA1AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-07T18:45:31.231Z",
-              "IsPinned": true
-            },
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{aa2115a1-9712-457b-9047-dbb71ca2cdd2}"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "Program.cs",
-              "DocumentMoniker": "C:\\git\\MobileAppProject\\PrestivaCars.API\\Program.cs",
-              "RelativeDocumentMoniker": "Program.cs",
-              "ToolTip": "C:\\git\\MobileAppProject\\PrestivaCars.API\\Program.cs",
-              "RelativeToolTip": "Program.cs",
-              "ViewState": "AgIAABMAAAAAAAAAAAAgwCoAAAAhAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-08T18:47:14.752Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "launchSettings.json",
-              "DocumentMoniker": "C:\\git\\MobileAppProject\\PrestivaCars.API\\Properties\\launchSettings.json",
-              "RelativeDocumentMoniker": "Properties\\launchSettings.json",
-              "ToolTip": "C:\\git\\MobileAppProject\\PrestivaCars.API\\Properties\\launchSettings.json",
-              "RelativeToolTip": "Properties\\launchSettings.json",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAABFAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2026-05-08T18:44:41.42Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "appsettings.json",
-              "DocumentMoniker": "C:\\git\\MobileAppProject\\PrestivaCars.API\\appsettings.json",
-              "RelativeDocumentMoniker": "appsettings.json",
-              "ToolTip": "C:\\git\\MobileAppProject\\PrestivaCars.API\\appsettings.json",
-              "RelativeToolTip": "appsettings.json",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2026-05-08T18:44:25.213Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "VehicleDto.cs",
-              "DocumentMoniker": "C:\\git\\MobileAppProject\\PrestivaCars.Application\\Features\\Vehicles\\Messages\\DTOs\\VehicleDto.cs",
-              "RelativeDocumentMoniker": "..\\PrestivaCars.Application\\Features\\Vehicles\\Messages\\DTOs\\VehicleDto.cs",
-              "ToolTip": "C:\\git\\MobileAppProject\\PrestivaCars.Application\\Features\\Vehicles\\Messages\\DTOs\\VehicleDto.cs",
-              "RelativeToolTip": "..\\PrestivaCars.Application\\Features\\Vehicles\\Messages\\DTOs\\VehicleDto.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABcAAAAqAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-08T17:48:52.773Z"
             }
           ]
         }
