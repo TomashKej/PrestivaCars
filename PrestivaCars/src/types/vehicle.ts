@@ -6,6 +6,8 @@
  * - UpdateVehicleRequest: Represents the structure of the request body when updating an existing vehicle.
  */
 
+import { VehicleFeatureDto } from './vehicleFeature'; // Importing VehicleFeatureDto for potential use in vehicle-related interfaces
+
 // Data Transfer Object for Vehicle
 export interface VehicleDto {
     id: number;
@@ -25,6 +27,8 @@ export interface VehicleDto {
     vehicleCategoryId: number;
     vehicleCategoryName: string;
     isActive: boolean;
+    
+    vehicleFeatures: VehicleFeatureDto[]; // Array of vehicle features associated with this vehicle
 }
 
 // Request interfaces for creating and updating vehicles
@@ -43,6 +47,8 @@ export interface CreateVehicleRequest {
     isSold: boolean;
     vehicleCategoryId: number;
     isActive: boolean;
+
+    featureIds: number[]; // Array of feature IDs to associate with the vehicle
 }
 
 // UpdateVehicleRequest includes the id of the vehicle to be updated, along with all other properties that can be modified.
@@ -62,4 +68,6 @@ export interface UpdateVehicleRequest {
     isSold: boolean;
     vehicleCategoryId: number;
     isActive: boolean;
+
+    featureIds: number[]; // Array of feature IDs to associate with the vehicle
 }

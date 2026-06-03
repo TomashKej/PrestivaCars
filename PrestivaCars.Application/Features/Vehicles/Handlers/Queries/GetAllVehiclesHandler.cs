@@ -16,7 +16,9 @@ namespace PrestivaCars.Application.Features.Vehicles.Handlers.Queries
             return await context.Vehicles
                 .AsNoTracking()
                 .Include(vehicle => vehicle.VehicleCategory)
-                .ProjectToType<VehicleDto>(mapper.Config)         // Use ProjectToType to map directly to VehicleDto
+                .Include(vehicle => vehicle.VehicleVehicleFeatures)
+                    .ThenInclude(vehicleVehicleFeature => vehicleVehicleFeature.VehicleFeature)
+                .ProjectToType<VehicleDto>(mapper.Config)
                 .ToListAsync(cancellationToken);
         }
     }

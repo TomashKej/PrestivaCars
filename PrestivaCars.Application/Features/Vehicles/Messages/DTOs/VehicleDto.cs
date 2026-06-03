@@ -1,4 +1,6 @@
-﻿namespace PrestivaCars.Application.Features.Vehicles.Messages.DTOs
+﻿using PrestivaCars.Application.Features.VehicleFeatures.Messages.DTOs;
+
+namespace PrestivaCars.Application.Features.Vehicles.Messages.DTOs
 {
     /// <summary>
     /// Represents a Data Transfer Object (DTO) for vehicles in the Prestiva Cars application.
@@ -22,6 +24,8 @@
         public int VehicleCategoryId { get; set; }
         public string VehicleCategoryName { get; set; } = string.Empty;
         public bool IsActive { get; set; }
+
+        public List<VehicleFeatureDto> VehicleFeatures { get; set; } = new();
     }
 }
 

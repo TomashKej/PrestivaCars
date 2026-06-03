@@ -20,7 +20,8 @@ namespace PrestivaCars.Application.Features.Vehicles.Handlers.Queries
         {
             return await context.Vehicles
                 .AsNoTracking()
-                .Include(vehicle => vehicle.VehicleCategory)
+                .Include(vehicle => vehicle.VehicleVehicleFeatures)
+                    .ThenInclude(vehicleVehicleFeature => vehicleVehicleFeature.VehicleFeature)
                 .Where(vehicle => vehicle.Id == request.Id)
                 .ProjectToType<VehicleDto>(mapper.Config)
                 .FirstOrDefaultAsync(cancellationToken);

@@ -23,5 +23,7 @@ namespace PrestivaCars.Application.Features.Vehicles.Messages.Commands
         public bool IsSold { get; set; }
         public int VehicleCategoryId { get; set; }
         public bool IsActive { get; set; }
+
+        public List<int> FeatureIds { get; set; } = new();
     }
 }

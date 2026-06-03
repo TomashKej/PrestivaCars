@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using PrestivaCars.Application.Common.Interfaces;
 using PrestivaCars.Application.Features.Vehicles.Messages.Commands;
+using PrestivaCars.Domain.Entities;
 
 namespace PrestivaCars.Application.Features.Vehicles.Handlers.Commands
 {
@@ -16,7 +17,8 @@ namespace PrestivaCars.Application.Features.Vehicles.Handlers.Commands
             CancellationToken cancellationToken)
         {
             var vehicle = await context.Vehicles
-                .FindAsync([request.Id], cancellationToken);
+                .Include(vehicle => vehicle.VehicleVehicleFeatures)
+                .FirstOrDefaultAsync(vehicle => vehicle.Id == request.Id, cancellationToken);
 
             if (vehicle is null)
             {
@@ -33,7 +35,37 @@ namespace PrestivaCars.Application.Features.Vehicles.Handlers.Commands
                     $"The vehicle category with Id number {request.VehicleCategoryId} was not found.");
             }
 
+            var selectedFeatureIds = request.FeatureIds
+                .Distinct()
+                .ToList();
+
+            var existingFeatureIds = await context.VehicleFeatures
+                .Where(vehicleFeature => selectedFeatureIds.Contains(vehicleFeature.Id))
+                .Select(vehicleFeature => vehicleFeature.Id)
+                .ToListAsync(cancellationToken);
+
+            var missingFeatureIds = selectedFeatureIds
+                .Except(existingFeatureIds)
+                .ToList();
+
+            if (missingFeatureIds.Count > 0)
+            {
+                throw new KeyNotFoundException(
+                    $"The following vehicle feature Ids were not found: {string.Join(", ", missingFeatureIds)}.");
+            }
+
             mapper.Map(request, vehicle);
+
+            vehicle.VehicleVehicleFeatures.Clear();
+
+            foreach (var featureId in selectedFeatureIds)
+            {
+                vehicle.VehicleVehicleFeatures.Add(new VehicleVehicleFeature
+                {
+                    VehicleId = vehicle.Id,
+                    VehicleFeatureId = featureId
+                });
+            }
 
             await context.SaveChangesAsync(cancellationToken);
 

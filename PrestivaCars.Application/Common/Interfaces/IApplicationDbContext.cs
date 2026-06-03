@@ -10,6 +10,8 @@ namespace PrestivaCars.Application.Common.Interfaces
     {
         DbSet<Vehicle> Vehicles { get; }
         DbSet<VehicleCategory> VehicleCategories { get; }
+        DbSet<VehicleFeature> VehicleFeatures { get; }
+        DbSet<VehicleVehicleFeature> VehicleVehicleFeatures { get; }
         Task<int> SaveChangesAsync(CancellationToken cancellationToken);
     }
 }

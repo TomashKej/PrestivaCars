@@ -1,7 +1,24 @@
 {
   "Version": 1,
   "WorkspaceRootPath": "C:\\git\\MobileAppProject\\PrestivaCars.API\\",
-  "Documents": [],
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{4D176A65-9655-4FF6-B7B8-874941E0E2C0}|..\\PrestivaCars.Domain\\PrestivaCars.Domain.csproj|c:\\git\\mobileappproject\\prestivacars.domain\\entities\\vehiclefeature.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E96408E1-05F5-450A-8385-36E2AADE0207}|..\\PrestivaCars.Application\\PrestivaCars.Application.csproj|c:\\git\\mobileappproject\\prestivacars.application\\features\\vehicles\\mappings\\vehiclemappingconfig.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4F457370-91FF-2826-BC86-8C041CFA3169}|PrestivaCars.API.csproj|c:\\git\\mobileappproject\\prestivacars.api\\controllers\\vehiclecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4F457370-91FF-2826-BC86-8C041CFA3169}|PrestivaCars.API.csproj|solutionrelative:controllers\\vehiclecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E96408E1-05F5-450A-8385-36E2AADE0207}|..\\PrestivaCars.Application\\PrestivaCars.Application.csproj|c:\\git\\mobileappproject\\prestivacars.application\\features\\vehicles\\handlers\\queries\\getvehiclebyidhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E96408E1-05F5-450A-8385-36E2AADE0207}|..\\PrestivaCars.Application\\PrestivaCars.Application.csproj|c:\\git\\mobileappproject\\prestivacars.application\\features\\vehicles\\messages\\dtos\\vehicledto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
@@ -9,11 +26,73 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": -1,
+          "SelectedChildIndex": 1,
           "Children": [
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{aa2115a1-9712-457b-9047-dbb71ca2cdd2}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "VehicleFeature.cs",
+              "DocumentMoniker": "C:\\git\\MobileAppProject\\PrestivaCars.Domain\\Entities\\VehicleFeature.cs",
+              "RelativeDocumentMoniker": "..\\PrestivaCars.Domain\\Entities\\VehicleFeature.cs",
+              "ToolTip": "C:\\git\\MobileAppProject\\PrestivaCars.Domain\\Entities\\VehicleFeature.cs",
+              "RelativeToolTip": "..\\PrestivaCars.Domain\\Entities\\VehicleFeature.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-01T17:07:03.234Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "VehicleMappingConfig.cs",
+              "DocumentMoniker": "C:\\git\\MobileAppProject\\PrestivaCars.Application\\Features\\Vehicles\\Mappings\\VehicleMappingConfig.cs",
+              "RelativeDocumentMoniker": "..\\PrestivaCars.Application\\Features\\Vehicles\\Mappings\\VehicleMappingConfig.cs",
+              "ToolTip": "C:\\git\\MobileAppProject\\PrestivaCars.Application\\Features\\Vehicles\\Mappings\\VehicleMappingConfig.cs",
+              "RelativeToolTip": "..\\PrestivaCars.Application\\Features\\Vehicles\\Mappings\\VehicleMappingConfig.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABkAAABRAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-31T16:52:31.545Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "VehicleController.cs",
+              "DocumentMoniker": "C:\\git\\MobileAppProject\\PrestivaCars.API\\Controllers\\VehicleController.cs",
+              "RelativeDocumentMoniker": "Controllers\\VehicleController.cs",
+              "ToolTip": "C:\\git\\MobileAppProject\\PrestivaCars.API\\Controllers\\VehicleController.cs",
+              "RelativeToolTip": "Controllers\\VehicleController.cs",
+              "ViewState": "AgIAAEEAAAAAAAAAAAAwwFoAAAATAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-31T16:49:55.513Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "GetVehicleByIdHandler.cs",
+              "DocumentMoniker": "C:\\git\\MobileAppProject\\PrestivaCars.Application\\Features\\Vehicles\\Handlers\\Queries\\GetVehicleByIdHandler.cs",
+              "RelativeDocumentMoniker": "..\\PrestivaCars.Application\\Features\\Vehicles\\Handlers\\Queries\\GetVehicleByIdHandler.cs",
+              "ToolTip": "C:\\git\\MobileAppProject\\PrestivaCars.Application\\Features\\Vehicles\\Handlers\\Queries\\GetVehicleByIdHandler.cs",
+              "RelativeToolTip": "..\\PrestivaCars.Application\\Features\\Vehicles\\Handlers\\Queries\\GetVehicleByIdHandler.cs",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-31T16:42:23.682Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "VehicleDto.cs",
+              "DocumentMoniker": "C:\\git\\MobileAppProject\\PrestivaCars.Application\\Features\\Vehicles\\Messages\\DTOs\\VehicleDto.cs",
+              "RelativeDocumentMoniker": "..\\PrestivaCars.Application\\Features\\Vehicles\\Messages\\DTOs\\VehicleDto.cs",
+              "ToolTip": "C:\\git\\MobileAppProject\\PrestivaCars.Application\\Features\\Vehicles\\Messages\\DTOs\\VehicleDto.cs",
+              "RelativeToolTip": "..\\PrestivaCars.Application\\Features\\Vehicles\\Messages\\DTOs\\VehicleDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABsAAABNAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-31T16:41:40.094Z"
             }
           ]
         }

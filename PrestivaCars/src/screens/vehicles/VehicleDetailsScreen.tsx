@@ -160,6 +160,22 @@ const VehicleDetailsScreen = ({route, navigation}: Props) => {
                     </View>
                     
                     <View style={styles.section}>
+                        <Text style={styles.sectionTitle}>Features</Text>
+
+                        {vehicle.vehicleFeatures.length > 0 ? (
+                            <View style={styles.featuresContainer}>
+                                {vehicle.vehicleFeatures.map(feature => (
+                                    <View key={feature.id} style={styles.featureBadge}>
+                                        <Text style={styles.featureBadgeText}>{feature.name}</Text>
+                                    </View>
+                                ))}
+                            </View>
+                        ) : (
+                            <Text style={styles.emptyFeaturesText}>No features assigned.</Text>
+                        )}
+                    </View>
+
+                    <View style={styles.section}>
                         <Text style={styles.sectionTitle}>Vehicle description</Text>
                         <Text style={styles.description}>{vehicle.description}</Text>
                     </View>
@@ -319,6 +335,32 @@ const styles = StyleSheet.create({
   detailsGrid: {
     gap: spacing.sm,
   },
+
+  featuresContainer: {
+  flexDirection: 'row',
+  flexWrap: 'wrap',
+  gap: spacing.sm,
+},
+
+featureBadge: {
+  backgroundColor: colors.background,
+  borderRadius: 18,
+  borderWidth: 1,
+  borderColor: colors.border,
+  paddingHorizontal: spacing.md,
+  paddingVertical: spacing.sm,
+},
+
+featureBadgeText: {
+  fontSize: typography.bodyS,
+  fontWeight: '800',
+  color: colors.textPrimary,
+},
+
+emptyFeaturesText: {
+  fontSize: typography.bodyM,
+  color: colors.textSecondary,
+},
 
   detailItem: {
     backgroundColor: colors.background,

@@ -33,6 +33,9 @@ const VehicleCard = ({
         year: 'numeric',
     });
 
+    const visibleFeatures = vehicle.vehicleFeatures.slice(0, 3);
+    const hiddenFeaturesCount = vehicle.vehicleFeatures.length - visibleFeatures.length;
+
     return (
         <TouchableOpacity
             activeOpacity={0.88}
@@ -62,6 +65,24 @@ const VehicleCard = ({
                 <Text style={styles.vehicleMeta}>
                     {vehicle.transmission} • {vehicle.fuelType}
                 </Text>
+
+                {vehicle.vehicleFeatures.length > 0 && (
+                    <View style={styles.featuresContainer}>
+                        {visibleFeatures.map(feature => (
+                            <View key={feature.id} style={styles.featureBadge}>
+                                <Text style={styles.featureBadgeText}>{feature.name}</Text>
+                            </View>
+                        ))}
+
+                        {hiddenFeaturesCount > 0 && (
+                            <View style={styles.moreFeaturesBadge}>
+                                <Text style={styles.moreFeaturesText}>
+                                    +{hiddenFeaturesCount} more
+                                </Text>
+                            </View>
+                        )}
+                    </View>
+                )}
 
                 <View style={styles.cardFooter}>
                     <Text style={styles.listedDate}>Listed {listedDate}</Text>
@@ -225,6 +246,41 @@ const styles = StyleSheet.create({
         fontWeight: '800',
         color: '#991B1B',
     },
+
+    featuresContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: spacing.xs,
+    marginTop: spacing.sm,
+},
+
+featureBadge: {
+    backgroundColor: colors.background,
+    borderRadius: 999,
+    borderWidth: 1,
+    borderColor: colors.border,
+    paddingHorizontal: spacing.sm,
+    paddingVertical: spacing.xs,
+},
+
+featureBadgeText: {
+    fontSize: typography.bodyS,
+    fontWeight: '700',
+    color: colors.textPrimary,
+},
+
+moreFeaturesBadge: {
+    backgroundColor: colors.textPrimary,
+    borderRadius: 999,
+    paddingHorizontal: spacing.sm,
+    paddingVertical: spacing.xs,
+},
+
+moreFeaturesText: {
+    fontSize: typography.bodyS,
+    fontWeight: '800',
+    color: colors.surface,
+},
 });
 
 export default VehicleCard;

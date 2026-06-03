@@ -21,6 +21,8 @@ import {VehicleCategoryDto} from '../../types/vehicleCategory';
 import colors from '../../theme/colors';
 import spacing from '../../theme/spacing';
 import typography from '../../theme/typography';
+import {getVehicleFeatures} from '../../api/vehicleFeatureApi';
+import {VehicleFeatureDto} from '../../types/vehicleFeature';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'EditVehicle'>;
 
@@ -43,7 +45,8 @@ const EditVehicleScreen = ({route, navigation}: Props) => {
 
   const [vehicle, setVehicle] = useState<VehicleDto | null>(null);
   const [categories, setCategories] = useState<VehicleCategoryDto[]>([]);
-
+  const [vehicleFeatures, setVehicleFeatures] = useState<VehicleFeatureDto[]>([]);
+  const [selectedFeatureIds, setSelectedFeatureIds] = useState<number[]>([]);
   const [vehicleType, setVehicleType] = useState('');
   const [brand, setBrand] = useState('');
   const [model, setModel] = useState('');
@@ -89,19 +92,22 @@ const EditVehicleScreen = ({route, navigation}: Props) => {
     setPrice(vehicleData.price.toString());
     setDescription(vehicleData.description);
     setVehicleCategoryId(vehicleData.vehicleCategoryId.toString());
+    setSelectedFeatureIds(vehicleData.vehicleFeatures.map(feature => feature.id));
   };
 
   const loadData = async () => {
     try {
       setIsLoading(true);
 
-      const [vehicleData, categoryData] = await Promise.all([
+      const [vehicleData, categoryData, featureData] = await Promise.all([
         getVehicleById(vehicleId),
         getVehicleCategories(),
+        getVehicleFeatures(),
       ]);
 
       fillForm(vehicleData);
       setCategories(categoryData);
+      setVehicleFeatures(featureData);
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : 'Unknown error occurred.';
@@ -115,6 +121,16 @@ const EditVehicleScreen = ({route, navigation}: Props) => {
   useEffect(() => {
     loadData();
   }, [vehicleId]);
+
+  const toggleFeature = (featureId: number) => {
+    setSelectedFeatureIds(currentFeatureIds => {
+      if (currentFeatureIds.includes(featureId)) {
+        return currentFeatureIds.filter(id => id !== featureId);
+      }
+
+      return [...currentFeatureIds, featureId];
+    });
+  };
 
   const validateForm = () => {
     if (
@@ -168,6 +184,7 @@ const EditVehicleScreen = ({route, navigation}: Props) => {
       isSold: vehicle?.isSold ?? false,
       vehicleCategoryId: Number(vehicleCategoryId),
       isActive: vehicle?.isActive ?? true,
+      featureIds: selectedFeatureIds,
     };
 
     try {
@@ -322,6 +339,34 @@ const EditVehicleScreen = ({route, navigation}: Props) => {
             }))}
             onSelect={setVehicleCategoryId}
           />
+
+          <Text style={styles.inputLabel}>Vehicle features</Text>
+
+          <View style={styles.featuresContainer}>
+            {vehicleFeatures.map(feature => {
+              const isSelected = selectedFeatureIds.includes(feature.id);
+            
+              return (
+                <TouchableOpacity
+                  key={feature.id}
+                  style={[
+                    styles.featureOption,
+                    isSelected && styles.featureOptionSelected,
+                  ]}
+                  activeOpacity={0.8}
+                  onPress={() => toggleFeature(feature.id)}>
+                  <Text
+                    style={[
+                      styles.featureOptionText,
+                      isSelected && styles.featureOptionTextSelected,
+                    ]}>
+                    {isSelected ? '✓ ' : ''}
+                    {feature.name}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
+          </View>
 
           <FormInput
             label="Description"
@@ -623,6 +668,37 @@ const styles = StyleSheet.create({
     color: colors.textSecondary,
     textAlign: 'center',
   },
+
+  featuresContainer: {
+  flexDirection: 'row',
+  flexWrap: 'wrap',
+  gap: spacing.sm,
+  marginBottom: spacing.md,
+},
+
+featureOption: {
+  backgroundColor: colors.background,
+  borderRadius: 18,
+  borderWidth: 1,
+  borderColor: colors.border,
+  paddingHorizontal: spacing.md,
+  paddingVertical: spacing.sm,
+},
+
+featureOptionSelected: {
+  backgroundColor: colors.textPrimary,
+  borderColor: colors.textPrimary,
+},
+
+featureOptionText: {
+  fontSize: typography.bodyS,
+  fontWeight: '700',
+  color: colors.textPrimary,
+},
+
+featureOptionTextSelected: {
+  color: colors.surface,
+},
 });
 
 export default EditVehicleScreen;

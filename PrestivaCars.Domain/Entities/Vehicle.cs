@@ -33,5 +33,11 @@ namespace PrestivaCars.Domain.Entities
         /// </summary>
         public int VehicleCategoryId { get; set; }
         public VehicleCategory? VehicleCategory { get; set; }
+
+        /// <summary>
+        /// Gets or sets the collection of VehicleVehicleFeature entities that represent the many-to-many relationship between Vehicle and VehicleFeature. 
+        /// This allows a vehicle to have multiple features and a feature to be associated with multiple vehicles.
+        /// </summary>
+        public ICollection<VehicleVehicleFeature> VehicleVehicleFeatures { get; set; } = new List<VehicleVehicleFeature>();
     }
 }

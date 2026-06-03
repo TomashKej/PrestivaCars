@@ -20,13 +20,27 @@ import spacing from '../../theme/spacing';
 import typography from '../../theme/typography';
 import {getVehicleCategories} from '../../api/vehicleCategoryApi';
 import {VehicleCategoryDto} from '../../types/vehicleCategory';
+import { getVehicleFeatures } from '../../api/vehicleFeatureApi';
+import { VehicleFeatureDto } from '../../types/vehicleFeature';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'SellVehicle'>;
 
+/** Options for vehicle types 
+ * These options are used in the vehicle listing form to allow users to select the type of vehicle they are selling.
+ * The options include common vehicle types such as SUV, Saloon, Hatchback, Estate, Coupe, Convertible, and Van.
+ * This array is used to populate the dropdown selection for vehicle type in the form, ensuring that users can only select from predefined categories that are relevant to the automotive market.
+*/
 const VEHICLE_TYPE_OPTIONS = ['SUV', 'Saloon', 'Hatchback', 'Estate', 'Coupe', 'Convertible', 'Van'];
 const FUEL_TYPE_OPTIONS = ['Petrol', 'Diesel', 'Hybrid', 'Electric'];   
 const TRANSMISSION_OPTIONS = ['Manual', 'Automatic', 'Semi-automatic'];
 
+/**
+ * SellVehicleScreen is a React Native screen component that allows users to create a new vehicle listing in the Prestiva Cars application.
+ * The screen includes a form where users can input details about the vehicle they want to sell, such as brand, model, year, price, and features.
+ * It also fetches necessary data like vehicle categories and features from the API when the component mounts.
+ * @param param0 
+ * @returns 
+ */
 const SellVehicleScreen = ({navigation}: Props) => {
     const [vehicleType, setVehicleType] = useState('');
     const [brand, setBrand] = useState('');
@@ -43,6 +57,8 @@ const SellVehicleScreen = ({navigation}: Props) => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [categories, setCategories] = useState<VehicleCategoryDto[]>([]);
     const [isLoadingCategories, setIsLoadingCategories] = useState(false);
+    const [vehicleFeatures, setVehicleFeatures] = useState<VehicleFeatureDto[]>([]);
+    const [selectedFeatureIds, setSelectedFeatureIds] = useState<number[]>([]);
 
     // Generate year options from current year down to 1950
     const yearOptions = useMemo(() => {
@@ -61,6 +77,11 @@ const SellVehicleScreen = ({navigation}: Props) => {
         navigation.navigate('Home');
     };
 
+    /**
+     * Fetches the list of vehicle categories from the API and updates the component state.
+     * If the fetch operation fails, an error alert is displayed to the user.
+     * This function is called when the component mounts to ensure that the latest categories are available for selection when creating a vehicle listing.
+     */
     const loadVehicleCategories = async () => {
         try {
             setIsLoadingCategories(true);
@@ -77,12 +98,51 @@ const SellVehicleScreen = ({navigation}: Props) => {
         }
     };
 
-useEffect(() => {
-  loadVehicleCategories();
-}, []);
-    
+    /**
+     * Fetches the list of vehicle features from the API and updates the component state.
+     * If the fetch operation fails, an error alert is displayed to the user.
+     * This function is called when the component mounts to ensure that the latest features are available for selection when creating a vehicle listing.
+     */
+    const loadVehicleFeatures = async () => {
+      try {
+        const data = await getVehicleFeatures();
+      
+        setVehicleFeatures(data);
+      } catch (error) {
+        const errorMessage =
+          error instanceof Error ? error.message : 'Unknown error occurred.';
+      
+        Alert.alert('Error', `Unable to load vehicle features. ${errorMessage}`);
+      }
+    };
+
+    /**
+     * useEffect hook is used to load vehicle categories and features when the component mounts.
+     * This ensures that the form has the necessary data for users to select from when creating a new vehicle listing.
+     * The empty dependency array means this effect will only run once, when the component is first rendered.
+     */
+    useEffect(() => {
+      loadVehicleCategories();
+      loadVehicleFeatures();
+    }, []);
+
+    /**
+     * Toggles the selection of a vehicle feature by its ID. If the feature is already selected, it will be removed from the selection; if it is not selected, it will be added.
+      * This function updates the selectedFeatureIds state, which keeps track of which features the user has chosen to associate with the vehicle listing.
+     * @param featureId 
+     */
+    const toggleFeature = (featureId: number) => {
+      setSelectedFeatureIds(currentFeatureIds => {
+        if (currentFeatureIds.includes(featureId)) {
+          return currentFeatureIds.filter(id => id !== featureId);
+        }
+      
+        return [...currentFeatureIds, featureId];
+      });
+    };
+
   // Fetch vehicle categories when the component mounts
-  const validateForm = () => {
+    const validateForm = () => {
     if (
       !brand.trim() ||
       !model.trim() ||
@@ -113,11 +173,24 @@ useEffect(() => {
     return true;
 };
 
+/**
+ * Handles the form submission for creating a new vehicle listing. 
+ * It first validates the form inputs, and if they are valid, it constructs a CreateVehicleRequest object with the form data and selected features. It then calls the createVehicle API function to submit the data. 
+ * If the creation is successful, a success alert is shown and the user is navigated back to the Vehicles screen. 
+ * If there is an error during creation, an error alert is displayed with the error message.
+ * @param param0
+ * @returns 
+ */
   const handleSubmit = async () => {
     if (!validateForm()) {
       return;
     }
 
+    /**
+     * Constructs the request object for creating a new vehicle listing. 
+     * It gathers all the necessary data from the form inputs and the selected features, and formats it according to the CreateVehicleRequest interface. 
+     * This object is then sent to the API when creating the vehicle listing. The featureIds property is populated with the IDs of the features that the user has selected to associate with this vehicle.
+     */
     const request: CreateVehicleRequest = {
       vehicleType: vehicleType.trim(),
       brand: brand.trim(),
@@ -133,6 +206,7 @@ useEffect(() => {
       isSold: false,
       vehicleCategoryId: Number(vehicleCategoryId || 1),
       isActive: true,
+      featureIds: selectedFeatureIds,
     };
 
     try {
@@ -279,6 +353,34 @@ useEffect(() => {
             onSelect={setVehicleCategoryId}
           />
 
+          <Text style={styles.inputLabel}>Vehicle features</Text>
+
+          <View style={styles.featuresContainer}>
+            {vehicleFeatures.map(feature => {
+              const isSelected = selectedFeatureIds.includes(feature.id);
+            
+              return (
+                <TouchableOpacity
+                  key={feature.id}
+                  style={[
+                    styles.featureOption,
+                    isSelected && styles.featureOptionSelected,
+                  ]}
+                  activeOpacity={0.8}
+                  onPress={() => toggleFeature(feature.id)}>
+                  <Text
+                    style={[
+                      styles.featureOptionText,
+                      isSelected && styles.featureOptionTextSelected,
+                    ]}>
+                    {isSelected ? '✓ ' : ''}
+                    {feature.name}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
+          </View>
+
           <FormInput
             label="Description"
             value={description}
@@ -299,6 +401,13 @@ useEffect(() => {
     </View>
   );
 };
+
+/**
+ * FormInput is a reusable component for rendering a labeled text input field in the vehicle listing form. It accepts props for the label,
+ * value, placeholder, change handler, keyboard type, and whether the input should be multiline. 
+ * This component is used throughout the SellVehicleScreen to render various input fields such as brand, model, price, 
+ * and description, providing a consistent look and feel for all text inputs in the form.
+ */
 
 type FormInputProps = {
   label: string;
@@ -562,6 +671,37 @@ optionText: {
   fontSize: typography.bodyM,
   fontWeight: '700',
   color: colors.textPrimary,
+},
+
+featuresContainer: {
+  flexDirection: 'row',
+  flexWrap: 'wrap',
+  gap: spacing.sm,
+  marginBottom: spacing.md,
+},
+
+featureOption: {
+  backgroundColor: colors.background,
+  borderRadius: 18,
+  borderWidth: 1,
+  borderColor: colors.border,
+  paddingHorizontal: spacing.md,
+  paddingVertical: spacing.sm,
+},
+
+featureOptionSelected: {
+  backgroundColor: colors.textPrimary,
+  borderColor: colors.textPrimary,
+},
+
+featureOptionText: {
+  fontSize: typography.bodyS,
+  fontWeight: '700',
+  color: colors.textPrimary,
+},
+
+featureOptionTextSelected: {
+  color: colors.surface,
 },
 });
 
