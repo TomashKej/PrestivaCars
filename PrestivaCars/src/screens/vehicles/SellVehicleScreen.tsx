@@ -15,7 +15,8 @@ import BottomTabBar from '../../components/common/BottomTabBar';
 import PrimaryButton from '../../components/common/PrimaryButton';
 import {createVehicle} from '../../api/vehiclesApi';
 import {CreateVehicleRequest} from '../../types/vehicle';
-import colors from '../../theme/colors';
+import {useAppTheme} from '../../theme/ThemeContext';
+import type {ThemeColors} from '../../theme/colors';
 import spacing from '../../theme/spacing';
 import typography from '../../theme/typography';
 import {getVehicleCategories} from '../../api/vehicleCategoryApi';
@@ -42,6 +43,13 @@ const TRANSMISSION_OPTIONS = ['Manual', 'Automatic', 'Semi-automatic'];
  * @returns 
  */
 const SellVehicleScreen = ({navigation}: Props) => {
+    const {colors} = useAppTheme();
+
+    const styles = useMemo(
+      () => createStyles(colors),
+      [colors],
+    );
+
     const [vehicleType, setVehicleType] = useState('');
     const [brand, setBrand] = useState('');
     const [model, setModel] = useState('');
@@ -426,6 +434,13 @@ const FormInput = ({
   keyboardType = 'default',
   multiline = false,
 }: FormInputProps) => {
+  const {colors} = useAppTheme();
+
+  const styles = useMemo(
+    () => createStyles(colors),
+    [colors],
+  );
+
   return (
     <View style={styles.inputGroup}>
       <Text style={styles.inputLabel}>{label}</Text>
@@ -434,7 +449,7 @@ const FormInput = ({
         value={value}
         onChangeText={onChangeText}
         placeholder={placeholder}
-        placeholderTextColor={colors.textSecondary}
+        placeholderTextColor={colors.placeholder}
         keyboardType={keyboardType}
         multiline={multiline}
         style={[styles.input, multiline && styles.multilineInput]}
@@ -463,6 +478,13 @@ const FormSelect = ({
   options,
   onSelect,
 }: FormSelectProps) => {
+  const {colors} = useAppTheme();
+
+  const styles = useMemo(
+    () => createStyles(colors),
+    [colors],
+  );
+
   const [isVisible, setIsVisible] = useState(false);
 
   const selectedOption = options.find(option => option.value === value);
@@ -519,7 +541,8 @@ const FormSelect = ({
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors: ThemeColors) =>
+  StyleSheet.create({
   screen: {
     flex: 1,
     backgroundColor: colors.background,
@@ -565,6 +588,8 @@ const styles = StyleSheet.create({
     backgroundColor: colors.surface,
     borderRadius: 24,
     padding: spacing.lg,
+    borderWidth: 1,
+    borderColor: colors.border,
     shadowColor: colors.shadow,
     shadowOpacity: 0.08,
     shadowRadius: 14,
@@ -642,7 +667,7 @@ selectArrow: {
 
 modalOverlay: {
   flex: 1,
-  backgroundColor: 'rgba(0, 0, 0, 0.35)',
+  backgroundColor: colors.overlay,
   justifyContent: 'center',
   paddingHorizontal: spacing.xxl,
 },
@@ -690,9 +715,10 @@ featureOption: {
 },
 
 featureOptionSelected: {
-  backgroundColor: colors.textPrimary,
-  borderColor: colors.textPrimary,
+  backgroundColor: colors.primary,
+  borderColor: colors.primary,
 },
+
 
 featureOptionText: {
   fontSize: typography.bodyS,
@@ -701,7 +727,7 @@ featureOptionText: {
 },
 
 featureOptionTextSelected: {
-  color: colors.surface,
+  color: colors.white,
 },
 });
 

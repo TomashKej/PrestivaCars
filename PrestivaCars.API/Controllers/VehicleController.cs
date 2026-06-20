@@ -91,16 +91,19 @@ namespace PrestivaCars.API.Controllers
                 });
             }
 
-            try
-            {
-                await mediator.Send(command);
+            //try
+            //{
+            //    await mediator.Send(command);
 
-                return NoContent();
-            }
-            catch (KeyNotFoundException ex)
-            {
-                return NotFound(new { message = ex.Message });
-            }
+            //    return NoContent();
+            //}
+            //catch (KeyNotFoundException ex)
+            //{
+            //    return NotFound(new { message = ex.Message });
+            //}
+
+            await mediator.Send(command);
+            return NoContent();
         }
 
         /// <summary>

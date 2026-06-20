@@ -87,15 +87,18 @@ namespace PrestivaCars.API.Controllers
                 return BadRequest(new { message = "The Id in the URL does not match the Id in the request body." });
             }
 
-            try
-            {
-                await mediator.Send(command);
-                return NoContent();
-            }
-            catch (KeyNotFoundException ex)
-            { 
-                return NotFound(new { message = ex.Message });
-            }
+            //try
+            //{
+            //    await mediator.Send(command);
+            //    return NoContent();
+            //}
+            //catch (KeyNotFoundException ex)
+            //{ 
+            //    return NotFound(new { message = ex.Message });
+            //}
+        
+            await mediator.Send(command);
+            return NoContent();
         }
 
         /// <summary>

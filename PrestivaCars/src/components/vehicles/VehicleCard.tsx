@@ -1,7 +1,8 @@
-import React from "react";
+import React, {useMemo} from 'react';
+import {useAppTheme} from '../../theme/ThemeContext';
+import type {ThemeColors} from '../../theme/colors';
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { VehicleDto } from "../../types/vehicle";
-import colors from '../../theme/colors';
 import spacing from '../../theme/spacing';
 import typography from '../../theme/typography';
 
@@ -27,6 +28,13 @@ const VehicleCard = ({
     onEdit,                 // Callback for when the "Edit" button is pressed (only shown in "owner" variant)
     onDelete,               // Callback for when the "Delete" button is pressed (only shown in "owner" variant)
 }: Props) => {
+    const {colors} = useAppTheme();
+
+    const styles = useMemo(
+      () => createStyles(colors),
+      [colors],
+    );
+
     const listedDate = new Date(vehicle.createdAt).toLocaleDateString('en-GB', {
         day: '2-digit',
         month: 'short',
@@ -46,7 +54,9 @@ const VehicleCard = ({
                 <Text style={styles.imagePlaceholderText}>Prestiva Cars</Text>
 
                 <View style={[ styles.statusPill, vehicle.isSold ? styles.soldPill : styles.availablePill ]}>
-                    <Text style={styles.statusPillText}>{vehicle.isSold ? 'Sold' : 'Available'}</Text>
+                    <Text style={[styles.statusPillText, vehicle.isSold ? styles.soldPillText : styles.availablePillText,]}>
+                        {vehicle.isSold ? 'Sold' : 'Available'}
+                    </Text>
                 </View>
             </View>
 
@@ -109,178 +119,190 @@ const VehicleCard = ({
     );
 }; 
 
-const styles = StyleSheet.create({
+const createStyles = (colors: ThemeColors) =>
+  StyleSheet.create({
     vehicleCard: {
-        backgroundColor: colors.surface,
-        borderRadius: 24,
-        marginBottom: spacing.lg,
-        overflow: 'hidden',
-        shadowColor: colors.shadow,
-        shadowOpacity: 0.1,
-        shadowRadius: 16,
-        shadowOffset: {
-            width: 0,
-            height: 8,
-        },
-        elevation: 5,
+      backgroundColor: colors.surface,
+      borderRadius: 24,
+      marginBottom: spacing.lg,
+      overflow: 'hidden',
+      borderWidth: 1,
+      borderColor: colors.border,
+      shadowColor: colors.shadow,
+      shadowOpacity: 0.1,
+      shadowRadius: 16,
+      shadowOffset: {
+        width: 0,
+        height: 8,
+      },
+      elevation: 5,
     },
-    
+
     imagePlaceholder: {
-        height: 180,
-        backgroundColor: '#D1D5DB',
-        alignItems: 'center',
-        justifyContent: 'center',
-        position: 'relative',
+      height: 180,
+      backgroundColor: colors.imagePlaceholder,
+      alignItems: 'center',
+      justifyContent: 'center',
+      position: 'relative',
     },
- 
+
     imagePlaceholderText: {
-        fontSize: typography.bodyL,
-        fontWeight: '800',
-        color: '#6B7280',
-        letterSpacing: 0.5,
+      fontSize: typography.bodyL,
+      fontWeight: '800',
+      color: colors.imagePlaceholderText,
+      letterSpacing: 0.5,
     },
-   
+
     statusPill: {
-        position: 'absolute',
-        top: spacing.md,
-        right: spacing.md,
-        paddingHorizontal: spacing.md,
-        paddingVertical: spacing.xs,
-        borderRadius: 999,
+      position: 'absolute',
+      top: spacing.md,
+      right: spacing.md,
+      paddingHorizontal: spacing.md,
+      paddingVertical: spacing.xs,
+      borderRadius: 999,
     },
-  
+
     availablePill: {
-        backgroundColor: '#DCFCE7',
+      backgroundColor: colors.successBackground,
     },
-   
+
     soldPill: {
-        backgroundColor: '#FEE2E2',
+      backgroundColor: colors.dangerBackground,
     },
-    
+
     statusPillText: {
-        fontSize: typography.bodyS,
-        fontWeight: '800',
-        color: colors.textPrimary,
+      fontSize: typography.bodyS,
+      fontWeight: '800',
     },
-    
+
+    availablePillText: {
+      color: colors.textPrimary,
+    },
+
+    soldPillText: {
+      color: colors.dangerText,
+    },
+
     cardBody: {
-        padding: spacing.lg,
+      padding: spacing.lg,
     },
-   
+
     price: {
-        fontSize: 24,
-        fontWeight: '900',
-        color: colors.textPrimary,
-        marginBottom: spacing.xs,
+      fontSize: 24,
+      fontWeight: '900',
+      color: colors.textPrimary,
+      marginBottom: spacing.xs,
     },
-   
+
     vehicleName: {
-        fontSize: typography.titleS,
-        fontWeight: '800',
-        color: colors.textPrimary,
-        marginBottom: spacing.xs,
+      fontSize: typography.titleS,
+      fontWeight: '800',
+      color: colors.textPrimary,
+      marginBottom: spacing.xs,
     },
-    
+
     vehicleMeta: {
-        fontSize: typography.bodyM,
-        color: colors.textSecondary,
-        marginBottom: spacing.xs,
-    },
-   
-    cardFooter: {
-        marginTop: spacing.md,
-        paddingTop: spacing.md,
-        borderTopWidth: 1,
-        borderTopColor: colors.border,
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        gap: spacing.md,
-    },
-   
-    listedDate: {
-        flex: 1,
-        fontSize: typography.bodyS,
-        color: colors.textSecondary,
-        fontWeight: '600',
-    },
-   
-    category: {
-        fontSize: typography.bodyS,
-        color: colors.textPrimary,
-        fontWeight: '800',
-    },
-    
-    ownerActions: {
-        flexDirection: 'row',
-        gap: spacing.sm,
-        marginTop: spacing.md,
-    },
-    
-    secondaryActionButton: {
-        flex: 1,
-        backgroundColor: colors.background,
-        borderRadius: 14,
-        paddingVertical: spacing.sm,
-        alignItems: 'center',
-        borderWidth: 1,
-        borderColor: colors.border,
-    },
-    
-    secondaryActionText: {
-        fontSize: typography.bodyS,
-        fontWeight: '800',
-        color: colors.textPrimary,
-    },
-    
-    dangerActionButton: {
-        flex: 1,
-        backgroundColor: '#FEE2E2',
-        borderRadius: 14,
-        paddingVertical: spacing.sm,
-        alignItems: 'center',
-    },
-    
-    dangerActionText: {
-        fontSize: typography.bodyS,
-        fontWeight: '800',
-        color: '#991B1B',
+      fontSize: typography.bodyM,
+      color: colors.textSecondary,
+      marginBottom: spacing.xs,
     },
 
     featuresContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: spacing.xs,
-    marginTop: spacing.sm,
-},
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      gap: spacing.xs,
+      marginTop: spacing.sm,
+    },
 
-featureBadge: {
-    backgroundColor: colors.background,
-    borderRadius: 999,
-    borderWidth: 1,
-    borderColor: colors.border,
-    paddingHorizontal: spacing.sm,
-    paddingVertical: spacing.xs,
-},
+    featureBadge: {
+      backgroundColor: colors.background,
+      borderRadius: 999,
+      borderWidth: 1,
+      borderColor: colors.border,
+      paddingHorizontal: spacing.sm,
+      paddingVertical: spacing.xs,
+    },
 
-featureBadgeText: {
-    fontSize: typography.bodyS,
-    fontWeight: '700',
-    color: colors.textPrimary,
-},
+    featureBadgeText: {
+      fontSize: typography.bodyS,
+      fontWeight: '700',
+      color: colors.textPrimary,
+    },
 
-moreFeaturesBadge: {
-    backgroundColor: colors.textPrimary,
-    borderRadius: 999,
-    paddingHorizontal: spacing.sm,
-    paddingVertical: spacing.xs,
-},
+    moreFeaturesBadge: {
+      backgroundColor: colors.textPrimary,
+      borderRadius: 999,
+      paddingHorizontal: spacing.sm,
+      paddingVertical: spacing.xs,
+    },
 
-moreFeaturesText: {
-    fontSize: typography.bodyS,
-    fontWeight: '800',
-    color: colors.surface,
-},
-});
+    moreFeaturesText: {
+      fontSize: typography.bodyS,
+      fontWeight: '800',
+      color: colors.surface,
+    },
+
+    cardFooter: {
+      marginTop: spacing.md,
+      paddingTop: spacing.md,
+      borderTopWidth: 1,
+      borderTopColor: colors.border,
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      gap: spacing.md,
+    },
+
+    listedDate: {
+      flex: 1,
+      fontSize: typography.bodyS,
+      color: colors.textSecondary,
+      fontWeight: '600',
+    },
+
+    category: {
+      fontSize: typography.bodyS,
+      color: colors.textPrimary,
+      fontWeight: '800',
+    },
+
+    ownerActions: {
+      flexDirection: 'row',
+      gap: spacing.sm,
+      marginTop: spacing.md,
+    },
+
+    secondaryActionButton: {
+      flex: 1,
+      backgroundColor: colors.background,
+      borderRadius: 14,
+      paddingVertical: spacing.sm,
+      alignItems: 'center',
+      borderWidth: 1,
+      borderColor: colors.border,
+    },
+
+    secondaryActionText: {
+      fontSize: typography.bodyS,
+      fontWeight: '800',
+      color: colors.textPrimary,
+    },
+
+    dangerActionButton: {
+      flex: 1,
+      backgroundColor: colors.dangerBackground,
+      borderRadius: 14,
+      paddingVertical: spacing.sm,
+      alignItems: 'center',
+      borderWidth: 1,
+      borderColor: colors.dangerText,
+    },
+
+    dangerActionText: {
+      fontSize: typography.bodyS,
+      fontWeight: '800',
+      color: colors.dangerText,
+    },
+  });
 
 export default VehicleCard;

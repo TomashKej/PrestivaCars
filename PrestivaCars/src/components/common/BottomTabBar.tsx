@@ -1,88 +1,137 @@
-/** 
- * BottomTabBar component
- * This component represents the bottom tab bar of the application. 
- * It displays a set of tabs that users can navigate between. Each tab consists of an icon placeholder and a label. 
- * The component is styled to fit at the bottom of the screen and provides a consistent navigation experience across the app.
- * CURRENTLY USING PLACEHOLDER ICONS (O) FOR DEMONSTRATION PURPOSES. THESE SHOULD BE REPLACED WITH ACTUAL ICONS IN A PRODUCTION APP.
- */
-
-import React from 'react';
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import {useNavigation} from '@react-navigation/native';
+import React, {useMemo} from 'react';
+import {
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import {
+  useNavigation,
+  useRoute,
+} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+
 import {RootStackParamList} from '../../navigation/types';
-import colors from '../../theme/colors';
+import {useAppTheme} from '../../theme/ThemeContext';
+import type {ThemeColors} from '../../theme/colors';
 import spacing from '../../theme/spacing';
 
-// Define the type for navigation prop using the RootStackParamList
-type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
-// Define the structure of a tab item
+type NavigationProp =
+  NativeStackNavigationProp<RootStackParamList>;
+
 type TabItem = {
-    label: string;
-    route: keyof RootStackParamList;
-    icon: string; // Placeholder for icon name or component
+  label: string;
+  route: keyof RootStackParamList;
+  icon: string;
 };
 
-// Define the tabs to be displayed in the bottom tab bar
 const tabs: TabItem[] = [
-    { label: 'Home', route: 'Home', icon: '⌂' },
-    { label: 'Search', route: 'Vehicles', icon: '⌕' },
-    { label: 'Sell', route: 'SellVehicle', icon: '£' },
-    { label: 'Account', route: 'Account', icon: '○' }
+  {
+    label: 'Home',
+    route: 'Home',
+    icon: '⌂',
+  },
+  {
+    label: 'Search',
+    route: 'Vehicles',
+    icon: '⌕',
+  },
+  {
+    label: 'Sell',
+    route: 'SellVehicle',
+    icon: '£',
+  },
+  {
+    label: 'Account',
+    route: 'Account',
+    icon: '○',
+  },
 ];
 
-// BottomTabBar component definition
 const BottomTabBar = () => {
-    const navigation = useNavigation<NavigationProp>();
+  const navigation = useNavigation<NavigationProp>();
+  const route = useRoute();
 
-    const handleNavigate = (route: keyof RootStackParamList) => {
-        navigation.navigate(route as never); // Cast to never to satisfy TypeScript, since route is a keyof RootStackParamList
-    };
+  const {colors} = useAppTheme();
 
-    return (
+  const styles = useMemo(
+    () => createStyles(colors),
+    [colors],
+  );
+
+  const handleNavigate = (
+    routeName: keyof RootStackParamList,
+  ) => {
+    navigation.navigate(routeName as never);
+  };
+
+  return (
     <View style={styles.container}>
-        {tabs.map(tab => (
-            <TouchableOpacity
-                key={tab.label}
-                style={styles.tabItem}
-                activeOpacity={0.75}
-                onPress={() => handleNavigate(tab.route)}>
-                <Text style={styles.iconPlaceholder}>{tab.icon}</Text>
-                <Text style={styles.label}>{tab.label}</Text>
-            </TouchableOpacity>
-        ))}
+      {tabs.map(tab => {
+        const isActive = route.name === tab.route;
+
+        return (
+          <TouchableOpacity
+            key={tab.label}
+            style={styles.tabItem}
+            activeOpacity={0.75}
+            onPress={() => handleNavigate(tab.route)}>
+            <Text
+              style={[
+                styles.iconPlaceholder,
+                isActive && styles.activeItem,
+              ]}>
+              {tab.icon}
+            </Text>
+
+            <Text
+              style={[
+                styles.label,
+                isActive && styles.activeItem,
+              ]}>
+              {tab.label}
+            </Text>
+          </TouchableOpacity>
+        );
+      })}
     </View>
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors: ThemeColors) =>
+  StyleSheet.create({
     container: {
-        height: 78,
-        backgroundColor: colors.surface,
-        borderTopWidth: 1,
-        borderTopColor: colors.border,
-        flexDirection: 'row',
-        justifyContent: 'space-around',
-        alignItems: 'center',
-        paddingBottom: spacing.sm,
+      height: 78,
+      backgroundColor: colors.surface,
+      borderTopWidth: 1,
+      borderTopColor: colors.border,
+      flexDirection: 'row',
+      justifyContent: 'space-around',
+      alignItems: 'center',
+      paddingBottom: spacing.sm,
     },
 
     tabItem: {
-        alignItems: 'center',
-        justifyContent: 'center',
-        gap: 2,
+      flex: 1,
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: 2,
     },
 
     iconPlaceholder: {
-        fontSize: 18,
-        color: colors.textPrimary,
+      fontSize: 18,
+      color: colors.textSecondary,
     },
 
     label: {
-        fontSize: 12,
-        fontWeight: '600',
-        color: colors.textPrimary,
+      fontSize: 12,
+      fontWeight: '600',
+      color: colors.textSecondary,
     },
-});
+
+    activeItem: {
+      color: colors.primary,
+    },
+  });
 
 export default BottomTabBar;

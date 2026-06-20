@@ -12,9 +12,7 @@ namespace PrestivaCars.Application.Features.Vehicles.Handlers.Commands
         IMapper mapper)
         : IRequestHandler<UpdateVehicleCommand, Unit>
     {
-        public async Task<Unit> Handle(
-            UpdateVehicleCommand request,
-            CancellationToken cancellationToken)
+        public async Task<Unit> Handle(UpdateVehicleCommand request, CancellationToken cancellationToken)
         {
             var vehicle = await context.Vehicles
                 .Include(vehicle => vehicle.VehicleVehicleFeatures)

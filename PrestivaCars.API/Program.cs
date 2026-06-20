@@ -1,5 +1,7 @@
-using PrestivaCars.Infrastructure;
+using PrestivaCars.API.ExceptionHandlers;
 using PrestivaCars.Application;
+using PrestivaCars.Infrastructure;
+using PrestivaCars.Infrastructure.Data;
 
 namespace PrestivaCars.API
 {
@@ -10,7 +12,7 @@ namespace PrestivaCars.API
             var builder = WebApplication.CreateBuilder(args);
             
             RegisterServices(builder);
-            
+
             var app = builder.Build();
 
             ConfigureRequestPipeline(app);
@@ -26,8 +28,14 @@ namespace PrestivaCars.API
         {
             builder.Services.AddControllers();
 
+            builder.Services.AddProblemDetails();
+            builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+
             builder.Services.AddInfrastructure(builder.Configuration);
             builder.Services.AddApplication();
+
+            // Healt check
+            builder.Services.AddHealthChecks().AddDbContextCheck<ApplicationDbContext>(name: "database");
 
             builder.Services.AddOpenApi();
         }
@@ -38,9 +46,12 @@ namespace PrestivaCars.API
         /// <param name="app"></param>
         public static void ConfigureRequestPipeline(WebApplication app)
         {
+            app.UseExceptionHandler();
+
             if (app.Environment.IsDevelopment())
             {
                 app.MapOpenApi();
+
                 app.UseSwaggerUI(options =>
                 {
                     options.SwaggerEndpoint("/openapi/v1.json", "v1");
@@ -48,7 +59,9 @@ namespace PrestivaCars.API
             }
             //app.UseHttpsRedirection();
             app.UseAuthorization();
+
             app.MapControllers();
+            app.MapHealthChecks("/health");
         }
     }
 }

@@ -1,460 +1,572 @@
-import React, {useEffect, useState} from 'react';
-import {
-  ActivityIndicator,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import React, { useEffect, useMemo, useState, } from 'react';
+import { ActivityIndicator, ScrollView, StyleSheet, Text, TouchableOpacity, View, } from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
+
 import {RootStackParamList} from '../../navigation/types';
 import {getVehicleById} from '../../api/vehiclesApi';
 import {VehicleDto} from '../../types/vehicle';
-import colors from '../../theme/colors';
+import BottomTabBar from '../../components/common/BottomTabBar';
+import PrimaryButton from '../../components/common/PrimaryButton';
+import {useAppTheme} from '../../theme/ThemeContext';
+import type {ThemeColors} from '../../theme/colors';
 import spacing from '../../theme/spacing';
 import typography from '../../theme/typography';
-import BottomTabBar from '../../components/common/BottomTabBar';
 
-// Type definition for the props of the VehicleDetailsScreen component, using the RootStackParamList to specify the expected parameters for this screen
-type Props = NativeStackScreenProps<RootStackParamList, 'VehicleDetails'>;
+type Props = NativeStackScreenProps<
+  RootStackParamList,
+  'VehicleDetails'
+>;
 
-// Type definition for the props of the DetailItem component, which is a reusable component for displaying a label and value pair in the vehicle details screen
 type DetailItemProps = {
-    label: string;
-    value: string;
+  label: string;
+  value: string;
+  styles: ReturnType<typeof createStyles>;
 };
 
-// Reusable component for displaying a label and value pair in the vehicle details screen
-const DetailItem = ({label, value}: DetailItemProps) => {
+const DetailItem = ({
+  label,
+  value,
+  styles,
+}: DetailItemProps) => {
+  return (
+    <View style={styles.detailItem}>
+      <Text style={styles.detailLabel}>{label}</Text>
+      <Text style={styles.detailValue}>{value}</Text>
+    </View>
+  );
+};
+
+const VehicleDetailsScreen = ({
+  route,
+  navigation,
+}: Props) => {
+  const {vehicleId} = route.params;
+
+  const {colors} = useAppTheme();
+
+  const styles = useMemo(
+    () => createStyles(colors),
+    [colors],
+  );
+
+  const [vehicle, setVehicle] =
+    useState<VehicleDto | null>(null);
+
+  const [isLoading, setIsLoading] =
+    useState<boolean>(false);
+
+  const [error, setError] =
+    useState<string | null>(null);
+
+  const handleGoBack = () => {
+    navigation.navigate('Vehicles');
+  };
+
+  const loadVehicle = async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
+
+      const data = await getVehicleById(vehicleId);
+
+      setVehicle(data);
+    } catch (loadError) {
+      const errorMessage =
+        loadError instanceof Error
+          ? loadError.message
+          : 'An unknown error occurred';
+
+      setError(
+        `Unable to load vehicle details. Details: ${errorMessage}`,
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadVehicle();
+  }, [vehicleId]);
+
+  if (isLoading) {
     return (
-        <View style={styles.detailItem}>
-            <Text style={styles.detailLabel}>{label}</Text>
-            <Text style={styles.detailValue}>{value}</Text>
-        </View>
+      <View style={styles.stateContainer}>
+        <ActivityIndicator
+          size="large"
+          color={colors.primary}
+        />
+
+        <Text style={styles.stateText}>
+          Loading vehicle details...
+        </Text>
+      </View>
     );
-};
+  }
 
-// Main component for displaying the details of a specific vehicle, including loading state, error handling, and rendering the vehicle information
-const VehicleDetailsScreen = ({route, navigation}: Props) => {
-    const {vehicleId} = route.params;
-
-    const [vehicle, setVehicle] = useState<VehicleDto | null>(null);
-    const [isLoading, setIsLoading] = useState<boolean>(false);
-    const [error, setError] = useState<string | null>(null);
-
-    // Function to handle navigation back to the vehicle list screen
-    const handleGoBack = () => {
-        navigation.navigate('Vehicles');
-    };
-
-    const loadVehicle = async () => {
-        try {
-            setIsLoading(true);                                                                         // Start loading state
-            setError(null);                                                                             // Clear any previous errors
-
-            const data = await getVehicleById(vehicleId);                                               // Fetch vehicle details using the provided vehicleId
-            setVehicle(data);                                                                           // Set the fetched vehicle data to state
-        } catch (error) {
-            const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';  // Type guard to extract error message
-            setError(`Unable to load vehicle details. Details: ${errorMessage}`);                       // Set a user-friendly error message with details
-        } finally {
-            setIsLoading(false);
-        }
-    };
-    
-    // Load vehicle details when the component mounts or when the vehicleId changes
-    useEffect(() => {
-        loadVehicle();
-    }, [vehicleId]); 
-
-    // Render loading state, error state, or vehicle details based on the current state
-    if (isLoading) {
-        return(
-            <View style={styles.stateContainer}>
-                <ActivityIndicator size="large" />
-                <Text style={styles.stateText}>Loading vehicle details...</Text>
-            </View>
-        );
-    }
-
-    // Render error state if there was an error loading the vehicle details
-    if (error) {
-        return(
-            <View style={styles.stateContainer}>
-                <Text style={styles.errorTitle}>Something went wrong</Text>
-                <Text style={styles.stateText}>{error}</Text>
-
-                <TouchableOpacity style={styles.primaryButton} onPress={loadVehicle}>
-                    <Text style={styles.primaryButtonText}>Try again</Text>
-                </TouchableOpacity>
-            </View>
-        );
-    }
-
-    // Render vehicle details if the vehicle data was successfully loaded
-    if (!vehicle) {
-        return(
-            <View style={styles.stateContainer}>
-                <Text style={styles.errorTitle}>Vehicle not found</Text>
-                <TouchableOpacity
-                    style={styles.primaryButton}
-                    onPress={handleGoBack}>
-                    <Text style={styles.primaryButtonText}>Go back</Text>
-                </TouchableOpacity>
-            </View>
-        );
-    }
-
+  if (error) {
     return (
-        <View style={styles.screen}>
-            <ScrollView
-                showsVerticalScrollIndicator={false}
-                contentContainerStyle={styles.scrollContent}>
-                <TouchableOpacity
-                    style={styles.backButton}
-                    activeOpacity={0.7}
-                    onPress={handleGoBack}>
-                    <Text style={styles.backButtonText}>← Back</Text>
-                </TouchableOpacity>
+      <View style={styles.stateContainer}>
+        <Text style={styles.errorTitle}>
+          Something went wrong
+        </Text>
 
-                <View style={styles.imagePlaceholder}>
-                    <Text style={styles.imagePlaceholderText}>Prestiva Cars</Text>
+        <Text style={styles.stateText}>
+          {error}
+        </Text>
 
-                    <View
-                        style={[
-                            styles.statusPill,
-                            vehicle.isSold ? styles.soldPill : styles.availablePill,
-                        ]}>
-                        <Text style={styles.statusPillText}>
-                            {vehicle.isSold ? 'Sold' : 'Available'}
-                        </Text>
-                    </View>
-                </View>
-                  
-                <View style={styles.contentCard}>
-                    <Text style={styles.price}>£{vehicle.price.toLocaleString()}</Text>
-                    
-                    <Text style={styles.title}>
-                        {vehicle.brand} {vehicle.model}
-                    </Text>
-                    
-                    <Text style={styles.subtitle}>
-                        {vehicle.vehicleType} • {vehicle.year} •{' '}
-                        {vehicle.mileage.toLocaleString()} miles
-                    </Text>
-                    
-                    <View style={styles.section}>
-                        <Text style={styles.sectionTitle}>Overview</Text>
-
-                        <View style={styles.detailsGrid}>
-                            <DetailItem label="Brand" value={vehicle.brand} />
-                            <DetailItem label="Model" value={vehicle.model} />
-                            <DetailItem label="Year" value={vehicle.year.toString()} />
-                            <DetailItem label="Category" value={vehicle.vehicleCategoryName} />
-                            <DetailItem label="Fuel type" value={vehicle.fuelType} />
-                            <DetailItem label="Transmission" value={vehicle.transmission} />
-                            <DetailItem label="Mileage" value={`${vehicle.mileage.toLocaleString()} miles`} />
-                            <DetailItem label="Registration" value={vehicle.registrationNumber}/>
-                        </View>
-                    </View>
-                    
-                    <View style={styles.section}>
-                        <Text style={styles.sectionTitle}>Features</Text>
-
-                        {vehicle.vehicleFeatures.length > 0 ? (
-                            <View style={styles.featuresContainer}>
-                                {vehicle.vehicleFeatures.map(feature => (
-                                    <View key={feature.id} style={styles.featureBadge}>
-                                        <Text style={styles.featureBadgeText}>{feature.name}</Text>
-                                    </View>
-                                ))}
-                            </View>
-                        ) : (
-                            <Text style={styles.emptyFeaturesText}>No features assigned.</Text>
-                        )}
-                    </View>
-
-                    <View style={styles.section}>
-                        <Text style={styles.sectionTitle}>Vehicle description</Text>
-                        <Text style={styles.description}>{vehicle.description}</Text>
-                    </View>
-                    
-                    <View style={styles.section}>
-                        <Text style={styles.sectionTitle}>Technical details</Text>
-
-                        <View style={styles.infoRow}>
-                            <Text style={styles.infoLabel}>VIN number</Text>
-                            <Text style={styles.infoValue}>{vehicle.vinNumber}</Text>
-                        </View>
-
-                        <View style={styles.infoRow}>
-                            <Text style={styles.infoLabel}>Listed</Text>
-                            <Text style={styles.infoValue}>
-                                {new Date(vehicle.createdAt).toLocaleDateString('en-GB', {
-                                    day: '2-digit',
-                                    month: 'short',
-                                    year: 'numeric',
-                                })}
-                            </Text>
-                        </View>
-                          
-                        <View style={styles.infoRow}>
-                            <Text style={styles.infoLabel}>Listing status</Text>
-                            <Text style={styles.infoValue}>
-                              {vehicle.isActive ? 'Active' : 'Inactive'}
-                            </Text>
-                        </View>
-                    </View>
-                        
-                    <TouchableOpacity style={styles.contactButton}>
-                        <Text style={styles.contactButtonText}>Contact seller</Text>
-                    </TouchableOpacity>
-                </View>
-            </ScrollView>
-
-            <BottomTabBar/>
-        </View>
+        <PrimaryButton
+          title="Try again"
+          onPress={loadVehicle}
+          style={styles.stateButton}
+        />
+      </View>
     );
+  }
+
+  if (!vehicle) {
+    return (
+      <View style={styles.stateContainer}>
+        <Text style={styles.errorTitle}>
+          Vehicle not found
+        </Text>
+
+        <PrimaryButton
+          title="Go back"
+          onPress={handleGoBack}
+          style={styles.stateButton}
+        />
+      </View>
+    );
+  }
+
+  return (
+    <View style={styles.screen}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.scrollContent}>
+        <TouchableOpacity
+          style={styles.backButton}
+          activeOpacity={0.7}
+          onPress={handleGoBack}>
+          <Text style={styles.backButtonText}>
+            ← Back
+          </Text>
+        </TouchableOpacity>
+
+        <View style={styles.imagePlaceholder}>
+          <Text style={styles.imagePlaceholderText}>
+            Prestiva Cars
+          </Text>
+
+          <View
+            style={[
+              styles.statusPill,
+              vehicle.isSold
+                ? styles.soldPill
+                : styles.availablePill,
+            ]}>
+            <Text
+              style={[
+                styles.statusPillText,
+                vehicle.isSold
+                  ? styles.soldPillText
+                  : styles.availablePillText,
+              ]}>
+              {vehicle.isSold
+                ? 'Sold'
+                : 'Available'}
+            </Text>
+          </View>
+        </View>
+
+        <View style={styles.contentCard}>
+          <Text style={styles.price}>
+            £{vehicle.price.toLocaleString()}
+          </Text>
+
+          <Text style={styles.title}>
+            {vehicle.brand} {vehicle.model}
+          </Text>
+
+          <Text style={styles.subtitle}>
+            {vehicle.vehicleType} • {vehicle.year} •{' '}
+            {vehicle.mileage.toLocaleString()} miles
+          </Text>
+
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>
+              Overview
+            </Text>
+
+            <View style={styles.detailsGrid}>
+              <DetailItem
+                label="Brand"
+                value={vehicle.brand}
+                styles={styles}
+              />
+
+              <DetailItem
+                label="Model"
+                value={vehicle.model}
+                styles={styles}
+              />
+
+              <DetailItem
+                label="Year"
+                value={vehicle.year.toString()}
+                styles={styles}
+              />
+
+              <DetailItem
+                label="Category"
+                value={vehicle.vehicleCategoryName}
+                styles={styles}
+              />
+
+              <DetailItem
+                label="Fuel type"
+                value={vehicle.fuelType}
+                styles={styles}
+              />
+
+              <DetailItem
+                label="Transmission"
+                value={vehicle.transmission}
+                styles={styles}
+              />
+
+              <DetailItem
+                label="Mileage"
+                value={`${vehicle.mileage.toLocaleString()} miles`}
+                styles={styles}
+              />
+
+              <DetailItem
+                label="Registration"
+                value={vehicle.registrationNumber}
+                styles={styles}
+              />
+            </View>
+          </View>
+
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>
+              Features
+            </Text>
+
+            {vehicle.vehicleFeatures.length > 0 ? (
+              <View style={styles.featuresContainer}>
+                {vehicle.vehicleFeatures.map(feature => (
+                  <View
+                    key={feature.id}
+                    style={styles.featureBadge}>
+                    <Text style={styles.featureBadgeText}>
+                      {feature.name}
+                    </Text>
+                  </View>
+                ))}
+              </View>
+            ) : (
+              <Text style={styles.emptyFeaturesText}>
+                No features assigned.
+              </Text>
+            )}
+          </View>
+
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>
+              Vehicle description
+            </Text>
+
+            <Text style={styles.description}>
+              {vehicle.description}
+            </Text>
+          </View>
+
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>
+              Technical details
+            </Text>
+
+            <View style={styles.infoRow}>
+              <Text style={styles.infoLabel}>
+                VIN number
+              </Text>
+
+              <Text style={styles.infoValue}>
+                {vehicle.vinNumber}
+              </Text>
+            </View>
+
+            <View style={styles.infoRow}>
+              <Text style={styles.infoLabel}>
+                Listed
+              </Text>
+
+              <Text style={styles.infoValue}>
+                {new Date(
+                  vehicle.createdAt,
+                ).toLocaleDateString('en-GB', {
+                  day: '2-digit',
+                  month: 'short',
+                  year: 'numeric',
+                })}
+              </Text>
+            </View>
+
+            <View style={styles.infoRow}>
+              <Text style={styles.infoLabel}>
+                Listing status
+              </Text>
+
+              <Text style={styles.infoValue}>
+                {vehicle.isActive
+                  ? 'Active'
+                  : 'Inactive'}
+              </Text>
+            </View>
+          </View>
+
+          <PrimaryButton
+            title="Contact seller"
+            style={styles.contactButton}
+          />
+        </View>
+      </ScrollView>
+
+      <BottomTabBar />
+    </View>
+  );
 };
 
-const styles = StyleSheet.create({
-  screen: {
-    flex: 1,
-    backgroundColor: colors.background,
-  },
-
-  scrollContent: {
-    paddingHorizontal: spacing.xxl,
-    paddingTop: spacing.xxxl,
-    paddingBottom: spacing.xxxl,
-  },
-  
-  backButton: {
-    alignSelf: 'flex-start',
-    marginBottom: spacing.lg,
-    marginTop: spacing.lg,
-    backgroundColor: colors.surface,
-    borderRadius: 12,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
-    borderWidth: 1,
-    borderColor: colors.border,
-  },
-
-  backButtonText: {
-    fontSize: typography.bodyM,
-    fontWeight: '800',
-    color: colors.textPrimary,
-  },
-
-  imagePlaceholder: {
-    height: 220,
-    backgroundColor: '#D1D5DB',
-    borderRadius: 24,
-    alignItems: 'center',
-    justifyContent: 'center',
-    position: 'relative',
-    marginBottom: spacing.lg,
-  },
-
-  imagePlaceholderText: {
-    fontSize: typography.bodyL,
-    fontWeight: '900',
-    color: '#6B7280',
-    letterSpacing: 0.5,
-  },
-
-  statusPill: {
-    position: 'absolute',
-    top: spacing.md,
-    right: spacing.md,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.xs,
-    borderRadius: 999,
-  },
-
-  availablePill: {
-    backgroundColor: '#DCFCE7',
-  },
-
-  soldPill: {
-    backgroundColor: '#FEE2E2',
-  },
-
-  statusPillText: {
-    fontSize: typography.bodyS,
-    fontWeight: '800',
-    color: colors.textPrimary,
-  },
-
-  contentCard: {
-    backgroundColor: colors.surface,
-    borderRadius: 24,
-    padding: spacing.lg,
-    shadowColor: colors.shadow,
-    shadowOpacity: 0.08,
-    shadowRadius: 14,
-    shadowOffset: {
-      width: 0,
-      height: 8,
+const createStyles = (colors: ThemeColors) =>
+  StyleSheet.create({
+    screen: {
+      flex: 1,
+      backgroundColor: colors.background,
     },
-    elevation: 4,
-  },
 
-  price: {
-    fontSize: 28,
-    fontWeight: '900',
-    color: colors.textPrimary,
-    marginBottom: spacing.xs,
-  },
+    scrollContent: {
+      paddingHorizontal: spacing.xxl,
+      paddingTop: spacing.xxxl,
+      paddingBottom: spacing.xxxl,
+    },
 
-  title: {
-    fontSize: typography.titleL,
-    fontWeight: '900',
-    color: colors.textPrimary,
-  },
+    backButton: {
+      alignSelf: 'flex-start',
+      marginTop: spacing.lg,
+      marginBottom: spacing.lg,
+      backgroundColor: colors.surface,
+      borderRadius: 12,
+      paddingHorizontal: spacing.md,
+      paddingVertical: spacing.sm,
+      borderWidth: 1,
+      borderColor: colors.border,
+    },
 
-  subtitle: {
-    marginTop: spacing.xs,
-    fontSize: typography.bodyM,
-    color: colors.textSecondary,
-  },
+    backButtonText: {
+      fontSize: typography.bodyM,
+      fontWeight: '800',
+      color: colors.textPrimary,
+    },
 
-  section: {
-    marginTop: spacing.xl,
-  },
+    imagePlaceholder: {
+      height: 220,
+      backgroundColor: colors.imagePlaceholder,
+      borderRadius: 24,
+      alignItems: 'center',
+      justifyContent: 'center',
+      position: 'relative',
+      marginBottom: spacing.lg,
+    },
 
-  sectionTitle: {
-    fontSize: typography.titleS,
-    fontWeight: '900',
-    color: colors.textPrimary,
-    marginBottom: spacing.md,
-  },
+    imagePlaceholderText: {
+      fontSize: typography.bodyL,
+      fontWeight: '900',
+      color: colors.imagePlaceholderText,
+      letterSpacing: 0.5,
+    },
 
-  detailsGrid: {
-    gap: spacing.sm,
-  },
+    statusPill: {
+      position: 'absolute',
+      top: spacing.md,
+      right: spacing.md,
+      paddingHorizontal: spacing.md,
+      paddingVertical: spacing.xs,
+      borderRadius: 999,
+    },
 
-  featuresContainer: {
-  flexDirection: 'row',
-  flexWrap: 'wrap',
-  gap: spacing.sm,
-},
+    availablePill: {
+      backgroundColor: colors.successBackground,
+    },
 
-featureBadge: {
-  backgroundColor: colors.background,
-  borderRadius: 18,
-  borderWidth: 1,
-  borderColor: colors.border,
-  paddingHorizontal: spacing.md,
-  paddingVertical: spacing.sm,
-},
+    soldPill: {
+      backgroundColor: colors.dangerBackground,
+    },
 
-featureBadgeText: {
-  fontSize: typography.bodyS,
-  fontWeight: '800',
-  color: colors.textPrimary,
-},
+    statusPillText: {
+      fontSize: typography.bodyS,
+      fontWeight: '800',
+    },
 
-emptyFeaturesText: {
-  fontSize: typography.bodyM,
-  color: colors.textSecondary,
-},
+    availablePillText: {
+      color: colors.textPrimary,
+    },
 
-  detailItem: {
-    backgroundColor: colors.background,
-    borderRadius: 16,
-    padding: spacing.md,
-    borderWidth: 1,
-    borderColor: colors.border,
-  },
+    soldPillText: {
+      color: colors.dangerText,
+    },
 
-  detailLabel: {
-    fontSize: typography.bodyS,
-    color: colors.textSecondary,
-    marginBottom: spacing.xs,
-  },
+    contentCard: {
+      backgroundColor: colors.surface,
+      borderRadius: 24,
+      padding: spacing.lg,
+      borderWidth: 1,
+      borderColor: colors.border,
+      shadowColor: colors.shadow,
+      shadowOpacity: 0.08,
+      shadowRadius: 14,
+      shadowOffset: {
+        width: 0,
+        height: 8,
+      },
+      elevation: 4,
+    },
 
-  detailValue: {
-    fontSize: typography.bodyM,
-    fontWeight: '800',
-    color: colors.textPrimary,
-  },
+    price: {
+      fontSize: 28,
+      fontWeight: '900',
+      color: colors.textPrimary,
+      marginBottom: spacing.xs,
+    },
 
-  description: {
-    fontSize: typography.bodyM,
-    color: colors.textSecondary,
-    lineHeight: 22,
-  },
+    title: {
+      fontSize: typography.titleL,
+      fontWeight: '900',
+      color: colors.textPrimary,
+    },
 
-  infoRow: {
-    paddingVertical: spacing.sm,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.border,
-  },
+    subtitle: {
+      marginTop: spacing.xs,
+      fontSize: typography.bodyM,
+      color: colors.textSecondary,
+    },
 
-  infoLabel: {
-    fontSize: typography.bodyS,
-    color: colors.textSecondary,
-    marginBottom: spacing.xs,
-  },
+    section: {
+      marginTop: spacing.xl,
+    },
 
-  infoValue: {
-    fontSize: typography.bodyM,
-    fontWeight: '700',
-    color: colors.textPrimary,
-  },
+    sectionTitle: {
+      fontSize: typography.titleS,
+      fontWeight: '900',
+      color: colors.textPrimary,
+      marginBottom: spacing.md,
+    },
 
-  contactButton: {
-    marginTop: spacing.xl,
-    backgroundColor: colors.textPrimary,
-    borderRadius: 16,
-    paddingVertical: spacing.md,
-    alignItems: 'center',
-  },
+    detailsGrid: {
+      gap: spacing.sm,
+    },
 
-  contactButtonText: {
-    fontSize: typography.bodyM,
-    fontWeight: '900',
-    color: colors.surface,
-  },
+    detailItem: {
+      backgroundColor: colors.background,
+      borderRadius: 16,
+      padding: spacing.md,
+      borderWidth: 1,
+      borderColor: colors.border,
+    },
 
-  stateContainer: {
-    flex: 1,
-    backgroundColor: colors.background,
-    paddingHorizontal: spacing.xxl,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  
-  stateText: {
-    marginTop: spacing.sm,
-    fontSize: typography.bodyM,
-    color: colors.textSecondary,
-    textAlign: 'center',
-  },
+    detailLabel: {
+      fontSize: typography.bodyS,
+      color: colors.textSecondary,
+      marginBottom: spacing.xs,
+    },
 
-  errorTitle: {
-    fontSize: typography.titleS,
-    fontWeight: '900',
-    color: colors.textPrimary,
-    marginBottom: spacing.xs,
-  },
+    detailValue: {
+      fontSize: typography.bodyM,
+      fontWeight: '800',
+      color: colors.textPrimary,
+    },
 
-  primaryButton: {
-    marginTop: spacing.lg,
-    backgroundColor: colors.textPrimary,
-    borderRadius: 16,
-    paddingHorizontal: spacing.xl,
-    paddingVertical: spacing.md,
-  },
+    featuresContainer: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      gap: spacing.sm,
+    },
 
-  primaryButtonText: {
-    color: colors.surface,
-    fontSize: typography.bodyM,
-    fontWeight: '900',
-  },
-});
+    featureBadge: {
+      backgroundColor: colors.background,
+      borderRadius: 18,
+      borderWidth: 1,
+      borderColor: colors.border,
+      paddingHorizontal: spacing.md,
+      paddingVertical: spacing.sm,
+    },
+
+    featureBadgeText: {
+      fontSize: typography.bodyS,
+      fontWeight: '800',
+      color: colors.textPrimary,
+    },
+
+    emptyFeaturesText: {
+      fontSize: typography.bodyM,
+      color: colors.textSecondary,
+    },
+
+    description: {
+      fontSize: typography.bodyM,
+      color: colors.textSecondary,
+      lineHeight: 22,
+    },
+
+    infoRow: {
+      paddingVertical: spacing.sm,
+      borderBottomWidth: 1,
+      borderBottomColor: colors.border,
+    },
+
+    infoLabel: {
+      fontSize: typography.bodyS,
+      color: colors.textSecondary,
+      marginBottom: spacing.xs,
+    },
+
+    infoValue: {
+      fontSize: typography.bodyM,
+      fontWeight: '700',
+      color: colors.textPrimary,
+    },
+
+    contactButton: {
+      marginTop: spacing.xl,
+      width: '100%',
+    },
+
+    stateContainer: {
+      flex: 1,
+      backgroundColor: colors.background,
+      paddingHorizontal: spacing.xxl,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+
+    stateText: {
+      marginTop: spacing.sm,
+      fontSize: typography.bodyM,
+      color: colors.textSecondary,
+      textAlign: 'center',
+    },
+
+    errorTitle: {
+      fontSize: typography.titleS,
+      fontWeight: '900',
+      color: colors.textPrimary,
+      marginBottom: spacing.xs,
+    },
+
+    stateButton: {
+      marginTop: spacing.lg,
+    },
+  });
 
 export default VehicleDetailsScreen;
